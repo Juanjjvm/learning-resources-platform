@@ -15,4 +15,9 @@ class Resource extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function votes()
+    {
+        return $this->belongsToMany(Voter::class, 'votes');
+    }
 }
