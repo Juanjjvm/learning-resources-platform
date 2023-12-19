@@ -20,7 +20,7 @@ return new class extends Migration
         Schema::create('votes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('voter_id')->constrained();
-            $table->foreignId('candidate_id')->constrained();
+            $table->foreignId('resource_id')->constrained();
             $table->timestamps();
         });
     }

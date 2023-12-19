@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use App\Models\Voter;
 use App\Models\Category;
 use App\Models\Resource;
 use Illuminate\Http\Request;
@@ -15,8 +16,9 @@ class ResourceController extends Controller
         return Inertia::render('Resources', [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
-            'resources' => Resource::with('category')->latest()->get(),
+            'resources' => Resource::with('category', 'votes')->latest()->get(),
             'categories' => Category::all(),
+            'voterId' => Voter::getOrCreateVoter($request)->code,
         ]);
     }
     
@@ -37,13 +39,13 @@ class ResourceController extends Controller
     {
 
         return Resource::query()
-            ->when(!empty($request->search), function($query) use ($request) {
+            ->when(!empty($request->search), function ($query) use ($request) {
                 return $query->where('title', 'like', "%$request->search%");
             })
             ->when(!empty($request->category), function ($query) use ($request) {
                 return $query->where('category_id', $request->category);
             })
-            ->with('category')
+            ->with('category', 'votes')
             ->get();
     }
 }
